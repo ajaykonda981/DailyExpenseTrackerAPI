@@ -24,47 +24,24 @@ namespace DailyExpensesTrackerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<dynamic>>> GetDailyexpenses()
         {
-            var dailyExpenses = await _context.Dailyexpenses.OrderByDescending(x => x.ExpensesDate).ToListAsync();
-            var categories = await _context.Category.ToListAsync();
-            var paymentModes = await _context.Paymentmode.ToListAsync();
 
-
-
-            //var result = (from de in dailyExpenses
-            //              join ct in categories on de.Category equals ct.Id
-            //              join pm in paymentModes on de.PaymentMode equals pm.Id
-            //              where de.IsDeleted == false 
-
-            //              select new
-            //              {
-            //                  de.Id,
-            //                  de.Category,
-            //                  ct.CategoryName,
-            //                  de.ExpensesDate,
-            //                  de.PaymentMode,
-            //                  pm.PaymentMode1,
-            //                  de.PaymentDate,
-            //                  de.Amount
-
-            //              }).ToList();
-
-            var result = (from de in _context.Dailyexpenses
-                          join ct in _context.Category on de.Category equals ct.Id
-                          join pm in _context.Paymentmode on de.PaymentMode equals pm.Id
-                          where de.IsDeleted == false
-                          orderby de.ExpensesDate descending
-                          select new
-                          {
-                              de.Id,
-                              de.Category,
-                              ct.CategoryName,
-                              de.ExpensesDate,
-                              de.PaymentMode,
-                              pm.PaymentMode1,
-                              de.PaymentDate,
-                              de.Amount
-                          }).ToList();
-            return result;
+            var result = await (from de in _context.Dailyexpenses
+                                join ct in _context.Category on de.Category equals ct.Id
+                                join pm in _context.Paymentmode on de.PaymentMode equals pm.Id
+                                where de.IsDeleted == false
+                                orderby de.ExpensesDate descending
+                                select new
+                                {
+                                    de.Id,
+                                    de.Category,
+                                    ct.CategoryName,
+                                    de.ExpensesDate,
+                                    de.PaymentMode,
+                                    pm.PaymentMode1,
+                                    de.PaymentDate,
+                                    de.Amount
+                                }).ToListAsync();
+            return  result;
         }
 
         // GET: api/Dailyexpenses/5
